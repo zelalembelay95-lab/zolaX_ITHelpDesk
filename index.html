@@ -47,9 +47,7 @@
     -webkit-font-smoothing:antialiased;
     min-height:100%;
   }
-  #netbg{
-    position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55;
-  }
+  #netbg{ position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55; }
   #app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
   a{color:inherit}
   button{font-family:inherit;cursor:pointer}
@@ -59,32 +57,19 @@
   /* ---------- motion ---------- */
   @keyframes fadeSlideUp{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
-  @keyframes glowPulse{
-    0%,100%{ box-shadow:0 0 0 0 rgba(226,89,63,.55) }
-    50%{ box-shadow:0 0 0 6px rgba(226,89,63,0) }
-  }
-  @keyframes dotPulse{
-    0%,100%{ box-shadow:0 0 0 0 rgba(232,163,61,.55) }
-    50%{ box-shadow:0 0 0 6px rgba(232,163,61,0) }
-  }
-  @keyframes sweep{
-    0%{ background-position:-200% 0 }
-    100%{ background-position:200% 0 }
-  }
-  @keyframes ticklight{
-    0%{ opacity:.3 } 50%{ opacity:1 } 100%{ opacity:.3 }
-  }
+  @keyframes glowPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(226,89,63,.55) } 50%{ box-shadow:0 0 0 6px rgba(226,89,63,0) } }
+  @keyframes dotPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(232,163,61,.55) } 50%{ box-shadow:0 0 0 6px rgba(232,163,61,0) } }
+  @keyframes sweep{ 0%{ background-position:-200% 0 } 100%{ background-position:200% 0 } }
+  @keyframes spin{ to{ transform:rotate(360deg) } }
+  @keyframes shimmer{ 0%{ background-position:-300px 0 } 100%{ background-position:300px 0 } }
   main, .loginwrap{ animation:fadeIn .45s ease both }
   .stub{ animation:fadeSlideUp .4s ease both }
-  .stub:nth-child(1){animation-delay:.02s}
-  .stub:nth-child(2){animation-delay:.06s}
-  .stub:nth-child(3){animation-delay:.10s}
-  .stub:nth-child(4){animation-delay:.14s}
-  .stub:nth-child(5){animation-delay:.18s}
-  .stub:nth-child(6){animation-delay:.22s}
+  .stub:nth-child(1){animation-delay:.02s} .stub:nth-child(2){animation-delay:.06s}
+  .stub:nth-child(3){animation-delay:.10s} .stub:nth-child(4){animation-delay:.14s}
+  .stub:nth-child(5){animation-delay:.18s} .stub:nth-child(6){animation-delay:.22s}
   .stub:nth-child(n+7){animation-delay:.24s}
   @media (prefers-reduced-motion: reduce){
-    main,.loginwrap,.stub,.servingnum{animation:none !important}
+    main,.loginwrap,.stub,.servingnum,.scanring{animation:none !important}
     #netbg{display:none}
   }
 
@@ -99,10 +84,12 @@
   .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);animation:dotPulse 2.2s ease-out infinite}
   .whoami{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
   .whoami b{color:var(--text);font-weight:600}
-  .pill{
-    font-family:var(--mono);font-size:11px;letter-spacing:.03em;
-    padding:3px 8px;border-radius:20px;border:1px solid var(--border);color:var(--muted)
-  }
+  .pill{font-family:var(--mono);font-size:11px;letter-spacing:.03em;padding:3px 8px;border-radius:20px;border:1px solid var(--border);color:var(--muted)}
+  .connpill{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;padding:3px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}
+  .connpill.live{color:var(--teal);border:1px solid var(--teal);background:var(--teal-dim)}
+  .connpill.demo{color:var(--amber);border:1px solid var(--amber);background:var(--amber-dim)}
+  .connpill i{width:6px;height:6px;border-radius:50%;background:currentColor}
+
   .btn{
     border:1px solid var(--border);background:var(--panel-2);color:var(--text);
     padding:9px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:600;
@@ -110,11 +97,10 @@
   }
   .btn:hover{border-color:#3c4a58;transform:translateY(-1px)}
   .btn:active{transform:translateY(0)}
-  .btn:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible{
-    outline:2px solid var(--amber); outline-offset:2px;
-  }
+  .btn:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
   .btn-primary{background:var(--amber);border-color:var(--amber);color:#1a1206}
   .btn-primary:hover{background:#f0ae4c;box-shadow:0 0 0 4px rgba(232,163,61,.18)}
+  .btn-primary:disabled:hover{box-shadow:none}
   .btn-quiet{background:transparent;border-color:transparent;color:var(--muted)}
   .btn-quiet:hover{color:var(--text)}
   .btn-danger{border-color:var(--coral);color:var(--coral);background:transparent}
@@ -122,15 +108,8 @@
   .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
   .shell{display:flex;flex:1;min-height:0}
-  .nav{
-    width:198px;flex:none;border-right:1px solid var(--border);background:var(--panel);
-    padding:18px 10px;display:flex;flex-direction:column;gap:2px;
-  }
-  .nav button{
-    text-align:left;background:transparent;border:none;color:var(--muted);
-    padding:10px 12px;border-radius:var(--radius);font-size:14px;font-weight:600;
-    transition:background .15s, color .15s, box-shadow .2s;
-  }
+  .nav{width:198px;flex:none;border-right:1px solid var(--border);background:var(--panel);padding:18px 10px;display:flex;flex-direction:column;gap:2px}
+  .nav button{text-align:left;background:transparent;border:none;color:var(--muted);padding:10px 12px;border-radius:var(--radius);font-size:14px;font-weight:600;transition:background .15s, color .15s, box-shadow .2s}
   .nav button:hover{color:var(--text);background:var(--panel-2)}
   .nav button.active{color:var(--text);background:var(--panel-2);box-shadow:inset 3px 0 0 var(--amber), 0 0 14px -6px var(--amber)}
   .nav .navhead{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#5b6672;padding:8px 12px 4px}
@@ -147,27 +126,32 @@
   .loginleft{
     flex:1.15;display:flex;flex-direction:column;justify-content:center;
     padding:clamp(28px,6vw,72px);border-right:1px solid var(--border);
-    background:
-      radial-gradient(circle at 15% 20%, rgba(232,163,61,.07), transparent 45%),
-      var(--bg);
+    background:radial-gradient(circle at 15% 20%, rgba(232,163,61,.07), transparent 45%), var(--bg);
     position:relative;overflow:hidden;
   }
-  .loginright{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;min-width:320px}
-  .servingtag{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--amber);margin-bottom:14px}
+  .loginleft::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg, transparent 0%, rgba(87,211,217,.05) 50%, transparent 100%);
+    background-size:100% 300%;
+    animation:sweep 7s linear infinite;
+  }
+  .loginright{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;min-width:320px;position:relative}
+  .servingtag{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .servingtag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);animation:dotPulse 2.2s ease-out infinite}
+  .servingnumwrap{position:relative;display:inline-block}
+  .scanring{
+    position:absolute;top:50%;left:-30px;width:64px;height:64px;transform:translateY(-50%);
+    border-radius:50%;border:1.5px dashed rgba(87,211,217,.35);
+    animation:spin 14s linear infinite;pointer-events:none;
+  }
   .servingnum{
-    font-family:var(--head);font-weight:700;font-size:clamp(88px,13vw,168px);line-height:.9;
-    letter-spacing:-.02em;color:var(--text);
-    animation:flipin .7s cubic-bezier(.2,.8,.2,1);
+    font-family:var(--head);font-weight:700;font-size:clamp(88px,13vw,168px);line-height:.9;letter-spacing:-.02em;
     background:linear-gradient(100deg, var(--text) 40%, var(--cyan) 50%, var(--text) 60%);
-    background-size:250% 100%;
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
     animation:flipin .7s cubic-bezier(.2,.8,.2,1), sweep 5s linear infinite 1s;
   }
   @media (prefers-reduced-motion: reduce){ .servingnum{animation:none;-webkit-text-fill-color:var(--text)} }
-  @keyframes flipin{
-    0%{opacity:0;transform:translateY(18px) scale(.96)}
-    100%{opacity:1;transform:translateY(0) scale(1)}
-  }
+  @keyframes flipin{ 0%{opacity:0;transform:translateY(18px) scale(.96)} 100%{opacity:1;transform:translateY(0) scale(1)} }
   .servingsub{color:var(--muted);font-size:15px;margin-top:10px;max-width:460px;line-height:1.55}
   .queuestrip{display:flex;gap:22px;margin-top:38px;flex-wrap:wrap}
   .qstat{border-left:2px solid var(--border);padding-left:12px}
@@ -178,35 +162,25 @@
   .loginbox h1{font-size:20px;margin-bottom:4px}
   .field{margin-bottom:14px}
   .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-weight:600}
-  .field input, .field select, .field textarea{
-    width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);
-    padding:10px 12px;border-radius:var(--radius);
-  }
+  .field input, .field select, .field textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:var(--radius)}
   .field textarea{resize:vertical;min-height:84px;line-height:1.5}
   .formerr{color:var(--coral);font-size:13px;margin:-4px 0 12px;min-height:1em}
-  .demohint{
-    margin-top:22px;padding:12px 14px;border:1px dashed var(--border);border-radius:var(--radius);
-    font-size:12.5px;color:var(--muted);line-height:1.7;
-  }
+  .demohint{margin-top:22px;padding:12px 14px;border:1px dashed var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--muted);line-height:1.7}
   .demohint b{color:var(--text);font-family:var(--mono);font-weight:600}
+  .modebanner{
+    position:absolute;top:16px;left:16px;right:16px;z-index:5;
+    display:flex;align-items:center;gap:10px;justify-content:space-between;
+    background:var(--panel-2);border:1px solid var(--amber);color:var(--text);
+    padding:10px 14px;border-radius:var(--radius);font-size:12.5px;line-height:1.5;
+  }
+  .modebanner button{background:none;border:none;color:var(--muted);font-size:16px;line-height:1;padding:2px 4px}
 
   /* ---------- ticket stub cards ---------- */
-  .stub{
-    display:grid;grid-template-columns:76px 1fr auto;gap:0;
-    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-    margin-bottom:12px;overflow:hidden;align-items:stretch;
-    transition:border-color .18s, box-shadow .18s, transform .18s;
-  }
+  .stub{display:grid;grid-template-columns:76px 1fr auto;gap:0;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;align-items:stretch;transition:border-color .18s, box-shadow .18s, transform .18s}
   .stub:hover{border-color:#39485a;box-shadow:0 6px 20px -10px rgba(87,211,217,.25);transform:translateY(-1px)}
-  .stubnum{
-    background:var(--panel-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
-    border-right:1px dashed var(--border);position:relative;padding:10px 4px;
-  }
-  .stubnum::before,.stubnum::after{
-    content:"";position:absolute;width:14px;height:14px;background:var(--bg);border-radius:50%;right:-7px;
-  }
-  .stubnum::before{top:-7px}
-  .stubnum::after{bottom:-7px}
+  .stubnum{background:var(--panel-2);display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px dashed var(--border);position:relative;padding:10px 4px}
+  .stubnum::before,.stubnum::after{content:"";position:absolute;width:14px;height:14px;background:var(--bg);border-radius:50%;right:-7px}
+  .stubnum::before{top:-7px} .stubnum::after{bottom:-7px}
   .stubnum b{font-family:var(--mono);font-size:19px}
   .stubnum span{font-family:var(--mono);font-size:9.5px;color:var(--cyan);letter-spacing:.05em}
   .stubbody{padding:14px 18px;min-width:0}
@@ -224,22 +198,16 @@
   .stubactions{display:flex;gap:6px}
   .stubactions .btn{padding:6px 11px;font-size:12.5px}
 
-  .empty{
-    border:1px dashed var(--border);border-radius:var(--radius);padding:36px 22px;text-align:center;
-    color:var(--muted);font-size:14px;
-  }
+  .empty{border:1px dashed var(--border);border-radius:var(--radius);padding:36px 22px;text-align:center;color:var(--muted);font-size:14px}
+  .skeleton{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);height:78px;margin-bottom:12px;
+    background-image:linear-gradient(90deg, var(--panel) 0px, var(--panel-2) 40px, var(--panel) 80px);
+    background-size:600px 100%;animation:shimmer 1.4s linear infinite}
 
   /* ---------- new request ---------- */
-  .redirect{
-    border:1px solid var(--coral);background:var(--coral-dim);border-radius:var(--radius);
-    padding:16px 18px;font-size:13.5px;line-height:1.6;margin-top:4px;
-  }
+  .redirect{border:1px solid var(--coral);background:var(--coral-dim);border-radius:var(--radius);padding:16px 18px;font-size:13.5px;line-height:1.6;margin-top:4px}
   .redirect b{display:block;font-family:var(--head);font-size:15px;margin-bottom:4px;color:var(--text)}
   .sevrow{display:flex;gap:8px;flex-wrap:wrap}
-  .sevchip{
-    border:1px solid var(--border);background:var(--panel-2);padding:8px 13px;border-radius:20px;
-    font-size:12.5px;font-weight:600;color:var(--muted);transition:all .15s;
-  }
+  .sevchip{border:1px solid var(--border);background:var(--panel-2);padding:8px 13px;border-radius:20px;font-size:12.5px;font-weight:600;color:var(--muted);transition:all .15s}
   .sevchip:hover{border-color:#3c4a58;color:var(--text)}
   .sevchip.on{border-color:var(--amber);color:var(--amber);background:var(--amber-dim);box-shadow:0 0 0 3px rgba(232,163,61,.12)}
 
@@ -255,11 +223,7 @@
   .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   @media (max-width:560px){.grid2{grid-template-columns:1fr}}
-  .msgbar{
-    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-    background:var(--panel-2);border:1px solid var(--border);padding:10px 18px;border-radius:var(--radius);
-    font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:100;
-  }
+  .msgbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--border);padding:10px 18px;border-radius:var(--radius);font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:100}
   .footnote{margin-top:26px;font-size:12px;color:#5b6672;line-height:1.7}
   code{font-family:var(--mono);background:var(--panel-2);padding:1px 5px;border-radius:3px;font-size:12px}
   ::-webkit-scrollbar{height:8px;width:8px}
@@ -270,19 +234,24 @@
 <canvas id="netbg"></canvas>
 <div id="app"></div>
 
+<!--
+  Firebase Auth client SDK (compat build — plain <script> global, no bundler
+  needed). Only loaded/used when CONFIG.firebase below is filled in; in demo
+  mode these load but sit unused.
+-->
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
+
 <script>
 /* =====================================================================
-   AMBIENT NETWORK BACKGROUND
-   Drifting nodes with connecting lines when they're near each other —
-   a nod to the network this helpdesk is actually monitoring. Purely
-   decorative, low-opacity, paused for reduced-motion users.
+   AMBIENT NETWORK BACKGROUND — purely decorative, see previous version's
+   comments; unchanged in spirit, just kept here for the whole page.
 ===================================================================== */
 (function(){
   const canvas = document.getElementById('netbg');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ctx = canvas.getContext('2d');
   let w, h, nodes;
-
   function resize(){
     w = canvas.width = window.innerWidth * devicePixelRatio;
     h = canvas.height = window.innerHeight * devicePixelRatio;
@@ -290,46 +259,26 @@
     canvas.style.height = window.innerHeight + 'px';
     const count = Math.min(70, Math.round((window.innerWidth * window.innerHeight) / 26000));
     nodes = Array.from({length: count}, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.25 * devicePixelRatio,
-      vy: (Math.random() - 0.5) * 0.25 * devicePixelRatio,
+      x: Math.random()*w, y: Math.random()*h,
+      vx: (Math.random()-0.5)*0.25*devicePixelRatio, vy: (Math.random()-0.5)*0.25*devicePixelRatio,
     }));
   }
-
   function step(){
-    ctx.clearRect(0, 0, w, h);
-    const linkDist = 140 * devicePixelRatio;
-    for(const n of nodes){
-      n.x += n.vx; n.y += n.vy;
-      if(n.x < 0 || n.x > w) n.vx *= -1;
-      if(n.y < 0 || n.y > h) n.vy *= -1;
+    ctx.clearRect(0,0,w,h);
+    const linkDist = 140*devicePixelRatio;
+    for(const n of nodes){ n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>w)n.vx*=-1; if(n.y<0||n.y>h)n.vy*=-1; }
+    for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i], b=nodes[j], dx=a.x-b.x, dy=a.y-b.y, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<linkDist){ ctx.strokeStyle=`rgba(87,211,217,${0.16*(1-dist/linkDist)})`; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
     }
-    for(let i=0;i<nodes.length;i++){
-      for(let j=i+1;j<nodes.length;j++){
-        const a = nodes[i], b = nodes[j];
-        const dx = a.x-b.x, dy = a.y-b.y;
-        const dist = Math.sqrt(dx*dx+dy*dy);
-        if(dist < linkDist){
-          ctx.strokeStyle = `rgba(87,211,217,${0.16 * (1 - dist/linkDist)})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-        }
-      }
-    }
-    for(const n of nodes){
-      ctx.fillStyle = 'rgba(232,163,61,.55)';
-      ctx.beginPath(); ctx.arc(n.x, n.y, 1.6 * devicePixelRatio, 0, Math.PI*2); ctx.fill();
-    }
+    for(const n of nodes){ ctx.fillStyle='rgba(232,163,61,.55)'; ctx.beginPath(); ctx.arc(n.x,n.y,1.6*devicePixelRatio,0,Math.PI*2); ctx.fill(); }
     if(!reduceMotion) requestAnimationFrame(step);
   }
-
-  resize();
-  window.addEventListener('resize', resize);
+  resize(); window.addEventListener('resize', resize);
   if(reduceMotion){ step(); } else { requestAnimationFrame(step); }
 })();
 
-/* Animated count-up used on the login hero number. */
 function animateCount(el, target){
   if(!el) return;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -337,200 +286,309 @@ function animateCount(el, target){
   const start = performance.now(), dur = 900;
   function frame(now){
     const p = Math.min(1, (now-start)/dur);
-    const eased = 1 - Math.pow(1-p, 3);
-    const val = Math.round(eased * target);
+    const val = Math.round((1 - Math.pow(1-p,3)) * target);
     el.textContent = '#' + String(val).padStart(3,'0');
     if(p < 1) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 }
 </script>
+
 <script>
 /* =====================================================================
-   DATA LAYER
-   Everything in this block is the only place that touches storage.
-   Right now it reads/writes localStorage so the app is fully usable
-   as a standalone demo. To go live, swap the bodies of these functions
-   for Supabase calls (data) and Firebase Auth calls (login/session) —
-   see README.md for the exact swap-in code.
+   CONFIG — fill these in to go live. Until FIREBASE.apiKey is a real key,
+   the app runs in DEMO MODE against sample data stored in this browser
+   (nothing here talks to the internet). Once filled in, it talks to your
+   real Firebase project and your deployed Render API instead.
 ===================================================================== */
-const LS = {
-  users: 'itq_users_v1',
-  tickets: 'itq_tickets_v1',
-  categories: 'itq_categories_v1',
-  session: 'itq_session_v1',
-};
-
-const DEFAULT_CATEGORIES = [
-  {id:'server',    label:'Server / core system down',      dept:'IT',      weight:100, avgMin:55},
-  {id:'net',       label:'Network / internet down',        dept:'IT',      weight:95,  avgMin:40},
-  {id:'pcdown',    label:"Computer won't turn on",          dept:'IT',      weight:80,  avgMin:35},
-  {id:'printer',   label:'Printer not working',            dept:'IT',      weight:70,  avgMin:25},
-  {id:'email',     label:'Email not working',              dept:'IT',      weight:65,  avgMin:20},
-  {id:'login',     label:"Can't log in / password reset",  dept:'IT',      weight:60,  avgMin:15},
-  {id:'software',  label:'Software install or error',      dept:'IT',      weight:45,  avgMin:20},
-  {id:'other-it',  label:'Other IT issue',                 dept:'IT',      weight:40,  avgMin:20},
-  {id:'peripheral',label:'Mouse, keyboard or monitor',      dept:'IT',      weight:35,  avgMin:15},
-  {id:'media',     label:'Media player (e.g. VLC) issue',  dept:'IT',      weight:15,  avgMin:10},
-  {id:'payroll',   label:'Payroll / salary issue',         dept:'Finance', weight:0,   avgMin:0},
-  {id:'expense',   label:'Expense / reimbursement',        dept:'Finance', weight:0,   avgMin:0},
-  {id:'leave',     label:'Leave / attendance request',     dept:'HR',      weight:0,   avgMin:0},
-  {id:'hiring',    label:'Hiring / staffing question',     dept:'HR',      weight:0,   avgMin:0},
-  {id:'inventory', label:'Store / inventory issue',        dept:'Store',   weight:0,   avgMin:0},
-  {id:'other',     label:'Something else (not IT)',        dept:'Other',   weight:0,   avgMin:0},
-];
-
-const SEVERITY = {
-  low:      {label:'Low',      mult:0.7},
-  normal:   {label:'Normal',   mult:1.0},
-  high:     {label:'High',     mult:1.4},
-  critical: {label:'Critical', mult:1.8},
-};
-
-const DEFAULT_USERS = [
-  {id:'u-admin',  username:'admin',    password:'admin123',   name:'Selam Admin',   title:'Administrator', isAdmin:true,  isIT:false},
-  {id:'u-it',     username:'it',       password:'it123',      name:'Dawit (IT)',    title:'IT Support',    isAdmin:false, isIT:true},
-  {id:'u-ceo',    username:'ceo',      password:'ceo123',     name:'Hana Bekele',   title:'CEO',            isAdmin:false, isIT:false},
-  {id:'u-mgr',    username:'manager',  password:'manager123', name:'Yonas Tesfaye', title:'Manager',        isAdmin:false, isIT:false},
-  {id:'u-store',  username:'store',    password:'store123',   name:'Meron Alemu',   title:'Store',          isAdmin:false, isIT:false},
-  {id:'u-hr',     username:'hr',       password:'hr123',      name:'Kalkidan Fikru',title:'HR',              isAdmin:false, isIT:false},
-  {id:'u-fin',    username:'finance',  password:'finance123', name:'Biruk Girma',   title:'Finance',        isAdmin:false, isIT:false},
-];
-
-function loadJSON(key, fallback){
-  try{
-    const raw = localStorage.getItem(key);
-    if(!raw) return fallback;
-    return JSON.parse(raw);
-  }catch(e){ return fallback; }
-}
-function saveJSON(key, val){
-  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
-}
-
-function seedIfEmpty(){
-  if(!localStorage.getItem(LS.users)) saveJSON(LS.users, DEFAULT_USERS);
-  if(!localStorage.getItem(LS.categories)) saveJSON(LS.categories, DEFAULT_CATEGORIES);
-  if(!localStorage.getItem(LS.tickets)) saveJSON(LS.tickets, []);
-}
-seedIfEmpty();
-
-const DataLayer = {
-  getUsers(){ return loadJSON(LS.users, []); },
-  saveUsers(list){ saveJSON(LS.users, list); },
-  getCategories(){ return loadJSON(LS.categories, DEFAULT_CATEGORIES); },
-  saveCategories(list){ saveJSON(LS.categories, list); },
-  getTickets(){ return loadJSON(LS.tickets, []); },
-  saveTickets(list){ saveJSON(LS.tickets, list); },
-
-  login(username, password){
-    const users = this.getUsers();
-    const u = users.find(x => x.username.toLowerCase() === username.trim().toLowerCase() && x.password === password);
-    if(!u) return null;
-    saveJSON(LS.session, {id:u.id});
-    return u;
+const CONFIG = {
+  firebase: {
+    apiKey: "YOUR_FIREBASE_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
   },
-  logout(){ localStorage.removeItem(LS.session); },
-  currentUser(){
-    const s = loadJSON(LS.session, null);
-    if(!s) return null;
-    return this.getUsers().find(u => u.id === s.id) || null;
-  },
+  // Your Render service's public URL, e.g. "https://dispatch-api.onrender.com"
+  apiBase: "https://YOUR-APP.onrender.com",
 };
+
+const LIVE_MODE = !CONFIG.firebase.apiKey.startsWith('YOUR_') && !CONFIG.apiBase.includes('YOUR-APP');
+
+if (LIVE_MODE) {
+  firebase.initializeApp(CONFIG.firebase);
+}
 
 /* =====================================================================
-   PRIORITY ENGINE
+   DEMO BACKEND — the original localStorage-driven sample data. Fully
+   self-contained; this is what runs until CONFIG above is filled in.
 ===================================================================== */
-function scoreOf(ticket){
-  const cat = DataLayer.getCategories().find(c => c.id === ticket.categoryId);
-  const weight = cat ? cat.weight : 0;
-  const mult = SEVERITY[ticket.severity] ? SEVERITY[ticket.severity].mult : 1;
-  return Math.round(weight * mult);
-}
+const DEMO = (function(){
+  const LS = { users:'itq_users_v1', tickets:'itq_tickets_v1', categories:'itq_categories_v1', session:'itq_session_v1' };
 
-function activeQueueSorted(){
-  const tickets = DataLayer.getTickets().filter(t => t.status !== 'resolved');
-  return tickets.sort((a,b) => (b.score - a.score) || (a.createdAt - b.createdAt));
-}
+  const DEFAULT_CATEGORIES = [
+    {id:'server',    label:'Server / core system down',      dept:'IT',      weight:100, avgMin:55},
+    {id:'net',       label:'Network / internet down',        dept:'IT',      weight:95,  avgMin:40},
+    {id:'pcdown',    label:"Computer won't turn on",          dept:'IT',      weight:80,  avgMin:35},
+    {id:'printer',   label:'Printer not working',            dept:'IT',      weight:70,  avgMin:25},
+    {id:'email',     label:'Email not working',              dept:'IT',      weight:65,  avgMin:20},
+    {id:'login',     label:"Can't log in / password reset",  dept:'IT',      weight:60,  avgMin:15},
+    {id:'software',  label:'Software install or error',      dept:'IT',      weight:45,  avgMin:20},
+    {id:'other-it',  label:'Other IT issue',                 dept:'IT',      weight:40,  avgMin:20},
+    {id:'peripheral',label:'Mouse, keyboard or monitor',      dept:'IT',      weight:35,  avgMin:15},
+    {id:'media',     label:'Media player (e.g. VLC) issue',  dept:'IT',      weight:15,  avgMin:10},
+    {id:'payroll',   label:'Payroll / salary issue',         dept:'Finance', weight:0,   avgMin:0},
+    {id:'expense',   label:'Expense / reimbursement',        dept:'Finance', weight:0,   avgMin:0},
+    {id:'leave',     label:'Leave / attendance request',     dept:'HR',      weight:0,   avgMin:0},
+    {id:'hiring',    label:'Hiring / staffing question',     dept:'HR',      weight:0,   avgMin:0},
+    {id:'inventory', label:'Store / inventory issue',        dept:'Store',   weight:0,   avgMin:0},
+    {id:'other',     label:'Something else (not IT)',        dept:'Other',   weight:0,   avgMin:0},
+  ];
+  const SEVERITY = { low:{mult:0.7}, normal:{mult:1.0}, high:{mult:1.4}, critical:{mult:1.8} };
+  const DEFAULT_USERS = [
+    {id:'u-admin', username:'admin',   password:'admin123',   name:'Selam Admin',    title:'Administrator', isAdmin:true,  isIT:false},
+    {id:'u-it',    username:'it',      password:'it123',      name:'Dawit (IT)',     title:'IT Support',    isAdmin:false, isIT:true},
+    {id:'u-ceo',   username:'ceo',     password:'ceo123',     name:'Hana Bekele',    title:'CEO',            isAdmin:false, isIT:false},
+    {id:'u-mgr',   username:'manager', password:'manager123', name:'Yonas Tesfaye',  title:'Manager',        isAdmin:false, isIT:false},
+    {id:'u-store', username:'store',   password:'store123',   name:'Meron Alemu',    title:'Store',          isAdmin:false, isIT:false},
+    {id:'u-hr',    username:'hr',      password:'hr123',      name:'Kalkidan Fikru', title:'HR',              isAdmin:false, isIT:false},
+    {id:'u-fin',   username:'finance', password:'finance123', name:'Biruk Girma',    title:'Finance',        isAdmin:false, isIT:false},
+  ];
 
-function rankAndEtaFor(ticketId){
-  const queue = activeQueueSorted();
-  const idx = queue.findIndex(t => t.id === ticketId);
-  if(idx === -1) return null;
-  const cats = DataLayer.getCategories();
-  let etaMinutes = 0;
-  for(let i=0;i<idx;i++){
-    const c = cats.find(c => c.id === queue[i].categoryId);
-    etaMinutes += c ? c.avgMin : 15;
+  function loadJSON(key, fallback){ try{ const r=localStorage.getItem(key); return r?JSON.parse(r):fallback; }catch(e){ return fallback; } }
+  function saveJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+  function seed(){
+    if(!localStorage.getItem(LS.users)) saveJSON(LS.users, DEFAULT_USERS);
+    if(!localStorage.getItem(LS.categories)) saveJSON(LS.categories, DEFAULT_CATEGORIES);
+    if(!localStorage.getItem(LS.tickets)) saveJSON(LS.tickets, []);
   }
-  const own = cats.find(c => c.id === queue[idx].categoryId);
-  etaMinutes += own ? Math.round(own.avgMin * 0.6) : 10;
-  return { rank: idx + 1, total: queue.length, etaMinutes };
-}
+  seed();
 
-function ordinal(n){
-  const s = ['th','st','nd','rd'], v = n % 100;
-  return n + (s[(v-20)%10] || s[v] || s[0]);
-}
+  function getUsers(){ return loadJSON(LS.users, []); }
+  function saveUsers(l){ saveJSON(LS.users, l); }
+  function getCategories(){ return loadJSON(LS.categories, DEFAULT_CATEGORIES); }
+  function saveCategories(l){ saveJSON(LS.categories, l); }
+  function getTickets(){ return loadJSON(LS.tickets, []); }
+  function saveTickets(l){ saveJSON(LS.tickets, l); }
+
+  function scoreOf(ticket){
+    const cat = getCategories().find(c => c.id === ticket.categoryId || c.id === ticket.category_id);
+    const mult = SEVERITY[ticket.severity]?.mult ?? 1;
+    return Math.round((cat?.weight || 0) * mult);
+  }
+  function activeSorted(){
+    return getTickets().filter(t => t.status !== 'resolved').sort((a,b) => (b.score-a.score) || (a.createdAt-b.createdAt));
+  }
+  function rankEta(id){
+    const q = activeSorted(); const idx = q.findIndex(t => t.id === id);
+    if(idx === -1) return null;
+    const cats = getCategories();
+    let eta = 0;
+    for(let i=0;i<idx;i++){ const c = cats.find(c=>c.id===q[i].categoryId); eta += c?c.avgMin:15; }
+    const own = cats.find(c=>c.id===q[idx].categoryId); eta += own?Math.round(own.avgMin*0.6):10;
+    return { rank: idx+1, total: q.length, etaMinutes: eta };
+  }
+
+  let currentUser = null;
+  function seedCurrentUser(){ const s = loadJSON(LS.session, null); currentUser = s ? (getUsers().find(u=>u.id===s.id)||null) : null; }
+  seedCurrentUser();
+
+  return {
+    async onAuthChange(cb){ cb(currentUser); },
+    async login(username, password){
+      const u = getUsers().find(x => x.username.toLowerCase() === username.trim().toLowerCase() && x.password === password);
+      if(!u) throw new Error('Wrong username or password.');
+      currentUser = u; saveJSON(LS.session, {id:u.id});
+      return u;
+    },
+    async logout(){ currentUser = null; localStorage.removeItem(LS.session); },
+    async listCategories(){ return getCategories(); },
+    async submitTicket({categoryId, severity, description}){
+      const cat = getCategories().find(c => c.id === categoryId);
+      if(!cat || cat.dept !== 'IT') throw new Error(`not an IT matter — please contact ${cat?.dept||'the right department'}`);
+      const tickets = getTickets();
+      const t = {
+        id: 't-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), seq: tickets.length+1,
+        userId: currentUser.id, categoryId: cat.id, severity, description,
+        status:'open', createdAt: Date.now(), resolvedAt: null,
+      };
+      t.score = scoreOf(t);
+      tickets.push(t); saveTickets(tickets);
+      return t;
+    },
+    async myTickets(){
+      return getTickets().filter(t => t.userId === currentUser.id).sort((a,b)=>b.createdAt-a.createdAt)
+        .map(t => ({ ...t, category:getCategories().find(c=>c.id===t.categoryId), queue: t.status!=='resolved'?rankEta(t.id):null, created_at:t.createdAt, resolved_at:t.resolvedAt }));
+    },
+    async queue(){
+      const q = activeSorted();
+      const users = getUsers();
+      return q.map((t,i) => ({ ...t, rank:i+1, category:getCategories().find(c=>c.id===t.categoryId), requester:users.find(u=>u.id===t.userId), created_at:t.createdAt }));
+    },
+    async resolved(){
+      return getTickets().filter(t=>t.status==='resolved').sort((a,b)=>b.resolvedAt-a.resolvedAt)
+        .map(t => ({ ...t, category:getCategories().find(c=>c.id===t.categoryId), created_at:t.createdAt, resolved_at:t.resolvedAt }));
+    },
+    async startTicket(id){ const l=getTickets(); const t=l.find(x=>x.id===id); if(t) t.status='in_progress'; saveTickets(l); },
+    async resolveTicket(id){ const l=getTickets(); const t=l.find(x=>x.id===id); if(t){ t.status='resolved'; t.resolvedAt=Date.now(); } saveTickets(l); },
+    async adminListPeople(){ return getUsers(); },
+    async adminCreatePerson({name, title, username, password, isIT, isAdmin}){
+      const users = getUsers();
+      if(users.some(u=>u.username.toLowerCase()===username.toLowerCase())) throw new Error('That username is already taken.');
+      const u = { id:'u-'+Date.now(), name, title, username, password, isIT:!!isIT, isAdmin:!!isAdmin };
+      users.push(u); saveUsers(users);
+      return u;
+    },
+    async adminDeletePerson(id){ saveUsers(getUsers().filter(u=>u.id!==id)); },
+    async adminPatchCategory(id, patch){
+      const cats = getCategories(); const c = cats.find(x=>x.id===id);
+      if(c){ if(patch.weight!==undefined) c.weight=patch.weight; if(patch.avgMinutes!==undefined) c.avgMin=patch.avgMinutes; }
+      saveCategories(cats);
+    },
+  };
+})();
 
 /* =====================================================================
-   APP STATE + ROUTER
+   REMOTE BACKEND — talks to Firebase Auth + your Render API. Same method
+   surface as DEMO above, so the rest of the app never needs to know
+   which one it's using.
 ===================================================================== */
-const state = {
-  user: DataLayer.currentUser(),
-  tab: null,
-  loginError: '',
-  newTicket: { categoryId: '', severity: 'normal', description: '' },
-  toast: null,
-};
+const REMOTE = (function(){
+  let authUser = null;   // Firebase user object
+  let profile = null;    // row from /me — { id, name, title, is_it, is_admin }
 
-function setTab(t){ state.tab = t; render(); }
-function toast(msg){
-  state.toast = msg;
-  render();
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(()=>{ state.toast=null; render(); }, 2600);
-}
+  async function authedFetch(path, opts = {}){
+    if(!authUser) throw new Error('not signed in');
+    const idToken = await authUser.getIdToken();
+    const res = await fetch(CONFIG.apiBase + path, {
+      ...opts,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken, ...(opts.headers||{}) },
+    });
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok) throw new Error(data.error || ('request failed (' + res.status + ')'));
+    return data;
+  }
+  function toUserShape(p){ return { id:p.id, name:p.name, title:p.title, isAdmin:p.is_admin, isIT:p.is_it, username:authUser?.email }; }
 
-function defaultTabFor(user){
-  if(user.isAdmin) return 'admin-people';
-  if(user.isIT) return 'it-queue';
-  return 'new-request';
-}
+  return {
+    async onAuthChange(cb){
+      firebase.auth().onAuthStateChanged(async (u) => {
+        authUser = u;
+        if(!u){ profile = null; cb(null); return; }
+        try{ profile = await authedFetch('/me'); cb(toUserShape(profile)); }
+        catch(e){ profile = null; cb(null); }
+      });
+    },
+    async login(email, password){
+      if(!email.includes('@')) throw new Error('Use the email address your admin gave you.');
+      const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+      authUser = cred.user;
+      profile = await authedFetch('/me');
+      return toUserShape(profile);
+    },
+    async logout(){ await firebase.auth().signOut(); authUser = null; profile = null; },
+    async listCategories(){ return authedFetch('/categories'); },
+    async submitTicket({categoryId, severity, description}){
+      return authedFetch('/tickets', { method:'POST', body: JSON.stringify({ categoryId, severity, description }) });
+    },
+    async myTickets(){ return authedFetch('/my-tickets'); },
+    async queue(){ return authedFetch('/queue'); },
+    async resolved(){ return authedFetch('/resolved'); },
+    async startTicket(id){ return authedFetch(`/tickets/${id}/start`, { method:'POST' }); },
+    async resolveTicket(id){ return authedFetch(`/tickets/${id}/resolve`, { method:'POST' }); },
+    async adminListPeople(){ return authedFetch('/admin/people'); },
+    async adminCreatePerson({name, title, username, password, isIT, isAdmin}){
+      return authedFetch('/admin/people', { method:'POST', body: JSON.stringify({ name, title, email:username, password, isIT, isAdmin }) });
+    },
+    async adminDeletePerson(id){ return authedFetch(`/admin/people/${id}`, { method:'DELETE' }); },
+    async adminPatchCategory(id, patch){ return authedFetch(`/admin/categories/${id}`, { method:'PATCH', body: JSON.stringify(patch) }); },
+  };
+})();
 
+const Backend = LIVE_MODE ? REMOTE : DEMO;
+
+/* =====================================================================
+   PRESENTATION HELPERS shared by render functions
+===================================================================== */
+function ordinal(n){ const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
 function timeAgo(ts){
-  const mins = Math.max(0, Math.round((Date.now()-ts)/60000));
+  const t = typeof ts === 'string' ? new Date(ts).getTime() : ts;
+  const mins = Math.max(0, Math.round((Date.now()-t)/60000));
   if(mins < 1) return 'just now';
   if(mins < 60) return mins+'m ago';
   const hrs = Math.round(mins/60);
   if(hrs < 24) return hrs+'h ago';
   return Math.round(hrs/24)+'d ago';
 }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-function esc(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* =====================================================================
+   APP STATE
+===================================================================== */
+const state = {
+  user: null,
+  tab: null,
+  loginError: '',
+  newTicket: { categoryId: '', severity: 'normal', description: '' },
+  toast: null,
+  loading: false,
+  loadError: '',
+  bannerDismissed: false,
+  cache: { categories: [], myTickets: [], queue: [], resolved: [], people: [] },
+};
+
+function setTab(t){
+  state.tab = t;
+  state.newTicket = { categoryId:'', severity:'normal', description:'' };
+  render();
+  loadTab(t);
+}
+function toast(msg){
+  state.toast = msg; render();
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>{ state.toast=null; render(); }, 2600);
+}
+function defaultTabFor(user){
+  if(user.isAdmin) return 'admin-people';
+  if(user.isIT) return 'it-queue';
+  return 'new-request';
+}
+
+async function loadTab(tab){
+  state.loading = true; state.loadError = ''; render();
+  try{
+    if(tab === 'new-request') state.cache.categories = await Backend.listCategories();
+    if(tab === 'my-requests') state.cache.myTickets = await Backend.myTickets();
+    if(tab === 'it-queue') state.cache.queue = await Backend.queue();
+    if(tab === 'it-resolved') state.cache.resolved = await Backend.resolved();
+    if(tab === 'admin-people') state.cache.people = await Backend.adminListPeople();
+    if(tab === 'admin-categories') state.cache.categories = await Backend.listCategories();
+  }catch(e){ state.loadError = e.message; }
+  state.loading = false; render();
 }
 
 /* =====================================================================
    RENDER: LOGIN
 ===================================================================== */
 function renderLogin(){
-  const tickets = DataLayer.getTickets();
-  const resolvedCount = tickets.filter(t=>t.status==='resolved').length;
-  const openCount = tickets.filter(t=>t.status!=='resolved').length;
-  const critCount = tickets.filter(t=>t.status!=='resolved' && t.severity==='critical').length;
-  const nowServing = String(resolvedCount + openCount).padStart(3,'0');
-
+  const idLabel = LIVE_MODE ? 'Email' : 'Username';
+  const idAuto = LIVE_MODE ? 'email' : 'username';
   return `
   <div class="loginwrap">
     <div class="loginleft">
+      ${!LIVE_MODE && !state.bannerDismissed ? `
+        <div class="modebanner">
+          <span>Running in <b>demo mode</b> — sample data lives only in this browser. Fill in <code>CONFIG</code> in index.html to connect your real Firebase + Render API.</span>
+          <button id="dismiss-banner" aria-label="Dismiss">×</button>
+        </div>` : ''}
       <div class="servingtag">NOW DISPATCHING</div>
-      <div class="servingnum" id="serving-num" data-target="${resolvedCount + openCount}">#000</div>
+      <div class="servingnumwrap">
+        <div class="scanring"></div>
+        <div class="servingnum" id="serving-num" data-target="0">#000</div>
+      </div>
       <p class="servingsub">One queue for every IT request in the building — ranked by what actually needs fixing first, not by who asks loudest.</p>
       <div class="queuestrip">
-        <div class="qstat"><b>${openCount}</b><span>open tickets</span></div>
-        <div class="qstat"><b>${critCount}</b><span>critical right now</span></div>
-        <div class="qstat"><b>${resolvedCount}</b><span>resolved to date</span></div>
+        <div class="qstat"><b id="qs-open">–</b><span>open tickets</span></div>
+        <div class="qstat"><b id="qs-crit">–</b><span>critical right now</span></div>
+        <div class="qstat"><b id="qs-resolved">–</b><span>resolved to date</span></div>
       </div>
     </div>
     <div class="loginright">
@@ -539,51 +597,55 @@ function renderLogin(){
         <p class="sub" style="margin-bottom:22px">Use your company account to submit or manage requests.</p>
         <form id="loginform">
           <div class="field">
-            <label for="f-user">Username</label>
-            <input id="f-user" name="username" autocomplete="username" autofocus>
+            <label for="f-user">${idLabel}</label>
+            <input id="f-user" name="username" autocomplete="${idAuto}" autofocus>
           </div>
           <div class="field">
             <label for="f-pass">Password</label>
             <input id="f-pass" name="password" type="password" autocomplete="current-password">
           </div>
           <div class="formerr">${esc(state.loginError||'')}</div>
-          <button type="submit" class="btn btn-primary" style="width:100%">Sign in</button>
+          <button type="submit" class="btn btn-primary" id="login-submit" style="width:100%">Sign in</button>
         </form>
+        ${!LIVE_MODE ? `
         <div class="demohint">
           <b>DEMO ACCOUNTS</b><br>
           admin / admin123 — Administrator<br>
           it / it123 — IT Support<br>
           ceo / ceo123 — CEO&nbsp;&nbsp;·&nbsp;&nbsp;manager / manager123<br>
           store / store123 · hr / hr123 · finance / finance123
-        </div>
+        </div>` : ''}
       </div>
     </div>
   </div>`;
 }
 
-/* =====================================================================
-   RENDER: SHELL (topbar + nav)
-===================================================================== */
-function navItemsFor(user){
-  if(user.isAdmin){
-    return [
-      {id:'admin-people', label:'People'},
-      {id:'admin-categories', label:'Categories & weights'},
-      {id:'it-queue', label:'Live queue'},
-    ];
-  }
-  if(user.isIT){
-    return [
-      {id:'it-queue', label:'Queue'},
-      {id:'it-resolved', label:'Resolved'},
-    ];
-  }
-  return [
-    {id:'new-request', label:'New request'},
-    {id:'my-requests', label:'My requests'},
-  ];
+async function primeLoginStats(){
+  // Login hero stats are illustrative. In demo mode we read them straight
+  // from local storage; in live mode there's no public/unauthenticated
+  // summary endpoint (by design — /queue requires signing in as IT/Admin),
+  // so the hero simply starts at zero until someone signs in.
+  const tickets = LIVE_MODE ? [] : DEMO_ticketsSnapshot();
+  const openCount = tickets.filter(t=>t.status!=='resolved').length;
+  const critCount = tickets.filter(t=>t.status!=='resolved' && t.severity==='critical').length;
+  const resolvedCount = tickets.filter(t=>t.status==='resolved').length;
+  const numEl = document.getElementById('serving-num');
+  if(numEl){ numEl.dataset.target = String(resolvedCount+openCount); animateCount(numEl, resolvedCount+openCount); }
+  const setTxt = (id,val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  setTxt('qs-open', openCount); setTxt('qs-crit', critCount); setTxt('qs-resolved', resolvedCount);
+}
+function DEMO_ticketsSnapshot(){
+  try{ return JSON.parse(localStorage.getItem('itq_tickets_v1') || '[]'); }catch(e){ return []; }
 }
 
+/* =====================================================================
+   RENDER: SHELL
+===================================================================== */
+function navItemsFor(user){
+  if(user.isAdmin) return [ {id:'admin-people', label:'People'}, {id:'admin-categories', label:'Categories & weights'}, {id:'it-queue', label:'Live queue'} ];
+  if(user.isIT) return [ {id:'it-queue', label:'Queue'}, {id:'it-resolved', label:'Resolved'} ];
+  return [ {id:'new-request', label:'New request'}, {id:'my-requests', label:'My requests'} ];
+}
 function renderShell(inner){
   const u = state.user;
   const items = navItemsFor(u);
@@ -591,6 +653,7 @@ function renderShell(inner){
   <div class="topbar">
     <div class="brand"><span class="dot"></span> Dispatch</div>
     <div class="whoami">
+      <span class="connpill ${LIVE_MODE?'live':'demo'}"><i></i>${LIVE_MODE?'LIVE':'DEMO'}</span>
       <span class="pill">${esc(u.title)}</span>
       <span>Signed in as <b>${esc(u.name)}</b></span>
       <button class="btn btn-quiet" id="logoutbtn">Sign out</button>
@@ -601,34 +664,32 @@ function renderShell(inner){
       <div class="navhead">MENU</div>
       ${items.map(it => `<button data-tab="${it.id}" class="${state.tab===it.id?'active':''}">${esc(it.label)}</button>`).join('')}
     </div>
-    <main>${inner}</main>
+    <main>${state.loadError ? `<div class="empty" style="border-color:var(--coral);color:var(--coral);margin-bottom:16px">${esc(state.loadError)}</div>` : ''}${inner}</main>
   </div>
   ${state.toast ? `<div class="msgbar">${esc(state.toast)}</div>` : ''}
   `;
 }
 
-/* ---------- ticket stub renderer (shared) ---------- */
+function skeletons(n){ return Array.from({length:n}, () => `<div class="skeleton"></div>`).join(''); }
+
+/* ---------- ticket stub renderer ---------- */
 function ticketStub(t, opts){
   opts = opts || {};
-  const cats = DataLayer.getCategories();
-  const cat = cats.find(c => c.id === t.categoryId) || {label:t.categoryId};
-  const users = DataLayer.getUsers();
-  const requester = users.find(u => u.id === t.userId);
-  const statusBadge = t.status==='resolved'
-    ? `<span class="badge badge-resolved">RESOLVED</span>`
-    : t.status==='in_progress'
-      ? `<span class="badge badge-progress">IN PROGRESS</span>`
-      : `<span class="badge badge-open">OPEN</span>`;
+  const cat = t.category || {label:'—'};
+  const requester = t.requester;
+  const createdAt = t.created_at || t.createdAt;
+  const resolvedAt = t.resolved_at || t.resolvedAt;
+  const statusBadge = t.status==='resolved' ? `<span class="badge badge-resolved">RESOLVED</span>`
+    : t.status==='in_progress' ? `<span class="badge badge-progress">IN PROGRESS</span>`
+    : `<span class="badge badge-open">OPEN</span>`;
   const critBadge = (t.severity==='critical' && t.status!=='resolved') ? `<span class="badge badge-crit">CRITICAL</span>` : '';
 
   let rightBlock = '';
   if(t.status !== 'resolved'){
-    const ra = rankAndEtaFor(t.id);
-    if(ra){
-      rightBlock = `<div class="rankline"><b>${ordinal(ra.rank)}</b> of ${ra.total} in queue<br>~${ra.etaMinutes} min est.</div>`;
-    }
-  } else if(t.resolvedAt){
-    const mins = Math.max(1, Math.round((t.resolvedAt - t.createdAt)/60000));
+    const ra = t.queue || (t.rank ? {rank:t.rank, total:opts.total} : null);
+    if(ra) rightBlock = `<div class="rankline"><b>${ordinal(ra.rank)}</b>${ra.total?' of '+ra.total:''} in queue<br>${ra.etaMinutes!=null?'~'+ra.etaMinutes+' min est.':''}</div>`;
+  } else if(resolvedAt){
+    const mins = Math.max(1, Math.round((new Date(resolvedAt) - new Date(createdAt))/60000));
     rightBlock = `<div class="rankline">Fixed in <b>${mins}</b> min</div>`;
   }
 
@@ -640,20 +701,17 @@ function ticketStub(t, opts){
 
   return `
   <div class="stub">
-    <div class="stubnum"><b>#${t.seq}</b><span>SCORE ${t.score}</span></div>
+    <div class="stubnum"><b>#${t.seq ?? '—'}</b><span>SCORE ${t.score ?? 0}</span></div>
     <div class="stubbody">
       <div class="stubtitle">${esc(cat.label)}</div>
       <div class="stubmeta">
         ${opts.showRequester && requester ? `<span>${esc(requester.name)} · ${esc(requester.title)}</span>` : ''}
-        <span>${timeAgo(t.createdAt)}</span>
+        <span>${timeAgo(createdAt)}</span>
         ${statusBadge} ${critBadge}
       </div>
       ${t.description ? `<div class="stubdesc">${esc(t.description)}</div>` : ''}
     </div>
-    <div class="stubside">
-      ${rightBlock}
-      ${actions}
-    </div>
+    <div class="stubside">${rightBlock}${actions}</div>
   </div>`;
 }
 
@@ -661,11 +719,12 @@ function ticketStub(t, opts){
    RENDER: EMPLOYEE — NEW REQUEST
 ===================================================================== */
 function renderNewRequest(){
-  const cats = DataLayer.getCategories();
-  const itCats = cats.filter(c => c.dept === 'IT');
-  const otherCats = cats.filter(c => c.dept !== 'IT');
+  if(state.loading) return `<div class="maxw"><h1>New request</h1><p class="sub">Loading categories…</p>${skeletons(2)}</div>`;
+  const cats = state.cache.categories;
+  const itCats = cats.filter(c => (c.dept||c.department) === 'IT');
+  const otherCats = cats.filter(c => (c.dept||c.department) !== 'IT');
   const selected = cats.find(c => c.id === state.newTicket.categoryId);
-  const isNonIT = selected && selected.dept !== 'IT';
+  const isNonIT = selected && (selected.dept||selected.department) !== 'IT';
 
   return `
   <div class="maxw">
@@ -676,29 +735,16 @@ function renderNewRequest(){
         <label for="cat-select">What's the issue?</label>
         <select id="cat-select">
           <option value="">Choose a category…</option>
-          <optgroup label="IT">
-            ${itCats.map(c=>`<option value="${c.id}" ${state.newTicket.categoryId===c.id?'selected':''}>${esc(c.label)}</option>`).join('')}
-          </optgroup>
-          <optgroup label="Not IT">
-            ${otherCats.map(c=>`<option value="${c.id}" ${state.newTicket.categoryId===c.id?'selected':''}>${esc(c.label)}</option>`).join('')}
-          </optgroup>
+          <optgroup label="IT">${itCats.map(c=>`<option value="${c.id}" ${state.newTicket.categoryId===c.id?'selected':''}>${esc(c.label)}</option>`).join('')}</optgroup>
+          <optgroup label="Not IT">${otherCats.map(c=>`<option value="${c.id}" ${state.newTicket.categoryId===c.id?'selected':''}>${esc(c.label)}</option>`).join('')}</optgroup>
         </select>
       </div>
-
-      ${isNonIT ? `
-        <div class="redirect">
-          <b>This isn't handled by IT</b>
-          That looks like a <b>${esc(selected.dept)}</b> matter — IT can't action it. Please take this request directly to ${esc(selected.dept)} instead of submitting it here.
-        </div>
-      ` : ''}
-
+      ${isNonIT ? `<div class="redirect"><b>This isn't handled by IT</b>That looks like a <b>${esc(selected.dept||selected.department)}</b> matter — IT can't action it. Please take this request directly to ${esc(selected.dept||selected.department)} instead of submitting it here.</div>` : ''}
       ${(selected && !isNonIT) ? `
         <div class="field" style="margin-top:18px">
           <label>How urgent is it?</label>
           <div class="sevrow">
-            ${Object.entries(SEVERITY).map(([key,v])=>`
-              <button type="button" class="sevchip ${state.newTicket.severity===key?'on':''}" data-sev="${key}">${v.label}</button>
-            `).join('')}
+            ${['low','normal','high','critical'].map(key=>`<button type="button" class="sevchip ${state.newTicket.severity===key?'on':''}" data-sev="${key}">${key[0].toUpperCase()+key.slice(1)}</button>`).join('')}
           </div>
         </div>
         <div class="field" style="margin-top:14px">
@@ -715,15 +761,10 @@ function renderNewRequest(){
    RENDER: EMPLOYEE — MY REQUESTS
 ===================================================================== */
 function renderMyRequests(){
-  const mine = DataLayer.getTickets()
-    .filter(t => t.userId === state.user.id)
-    .sort((a,b) => b.createdAt - a.createdAt);
-  return `
-  <div class="maxw">
-    <h1>My requests</h1>
-    <p class="sub">Live status, your place in line, and a rough time estimate.</p>
-    ${mine.length===0 ? `<div class="empty">No requests yet. Submit one from “New request.”</div>` :
-      mine.map(t => ticketStub(t, {showRequester:false})).join('')}
+  if(state.loading) return `<div class="maxw"><h1>My requests</h1><p class="sub">Loading…</p>${skeletons(3)}</div>`;
+  const mine = state.cache.myTickets;
+  return `<div class="maxw"><h1>My requests</h1><p class="sub">Live status, your place in line, and a rough time estimate.</p>
+    ${mine.length===0 ? `<div class="empty">No requests yet. Submit one from “New request.”</div>` : mine.map(t => ticketStub(t, {showRequester:false})).join('')}
   </div>`;
 }
 
@@ -731,25 +772,17 @@ function renderMyRequests(){
    RENDER: IT — QUEUE / RESOLVED
 ===================================================================== */
 function renderITQueue(){
-  const queue = activeQueueSorted();
-  return `
-  <div class="maxw">
-    <h1>Live queue</h1>
-    <p class="sub">Sorted by priority score (category weight × urgency). Highest first.</p>
-    ${queue.length===0 ? `<div class="empty">Queue's empty — nothing waiting on IT right now.</div>` :
-      queue.map(t => ticketStub(t, {showRequester:true, itControls:true})).join('')}
+  if(state.loading) return `<div class="maxw"><h1>Live queue</h1><p class="sub">Loading…</p>${skeletons(4)}</div>`;
+  const queue = state.cache.queue;
+  return `<div class="maxw"><h1>Live queue</h1><p class="sub">Sorted by priority score (category weight × urgency). Highest first.</p>
+    ${queue.length===0 ? `<div class="empty">Queue's empty — nothing waiting on IT right now.</div>` : queue.map(t => ticketStub(t, {showRequester:true, itControls:true, total:queue.length})).join('')}
   </div>`;
 }
 function renderITResolved(){
-  const done = DataLayer.getTickets()
-    .filter(t => t.status==='resolved')
-    .sort((a,b) => b.resolvedAt - a.resolvedAt);
-  return `
-  <div class="maxw">
-    <h1>Resolved</h1>
-    <p class="sub">Closed tickets and how long each took.</p>
-    ${done.length===0 ? `<div class="empty">Nothing resolved yet.</div>` :
-      done.map(t => ticketStub(t, {showRequester:true})).join('')}
+  if(state.loading) return `<div class="maxw"><h1>Resolved</h1><p class="sub">Loading…</p>${skeletons(3)}</div>`;
+  const done = state.cache.resolved;
+  return `<div class="maxw"><h1>Resolved</h1><p class="sub">Closed tickets and how long each took.</p>
+    ${done.length===0 ? `<div class="empty">Nothing resolved yet.</div>` : done.map(t => ticketStub(t, {showRequester:true})).join('')}
   </div>`;
 }
 
@@ -757,25 +790,21 @@ function renderITResolved(){
    RENDER: ADMIN — PEOPLE
 ===================================================================== */
 function renderAdminPeople(){
-  const users = DataLayer.getUsers();
+  if(state.loading) return `<div class="maxw"><h1>People</h1><p class="sub">Loading…</p>${skeletons(4)}</div>`;
+  const users = state.cache.people;
   return `
   <div class="maxw">
     <div class="taghdr"><h1 style="margin:0">People</h1></div>
     <p class="sub">Create accounts and assign each person's title. IT and Admin roles unlock the matching dashboards.</p>
-
     <div class="card" style="margin-bottom:26px">
       <h2>Add a person</h2>
       <form id="adduserform">
         <div class="grid2">
           <div class="field"><label for="nu-name">Full name</label><input id="nu-name" required></div>
           <div class="field"><label for="nu-title">Title</label>
-            <select id="nu-title">
-              <option>CEO</option><option>Manager</option><option>Store</option>
-              <option>HR</option><option>Finance</option><option>IT Support</option>
-              <option>Administrator</option><option>Staff</option>
-            </select>
+            <select id="nu-title"><option>CEO</option><option>Manager</option><option>Store</option><option>HR</option><option>Finance</option><option>IT Support</option><option>Administrator</option><option>Staff</option></select>
           </div>
-          <div class="field"><label for="nu-user">Username</label><input id="nu-user" required></div>
+          <div class="field"><label for="nu-user">${LIVE_MODE?'Email':'Username'}</label><input id="nu-user" required type="${LIVE_MODE?'email':'text'}"></div>
           <div class="field"><label for="nu-pass">Temporary password</label><input id="nu-pass" required></div>
         </div>
         <div class="field" style="margin-top:2px">
@@ -787,19 +816,18 @@ function renderAdminPeople(){
         <button class="btn btn-primary" type="submit">Create account</button>
       </form>
     </div>
-
     <table>
-      <thead><tr><th>Name</th><th>Title</th><th>Username</th><th>Access</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>Title</th><th>${LIVE_MODE?'Email':'Username'}</th><th>Access</th><th></th></tr></thead>
       <tbody>
         ${users.map(u => `
           <tr>
             <td>${esc(u.name)}</td>
             <td><span class="titletag">${esc(u.title)}</span></td>
-            <td><code>${esc(u.username)}</code></td>
+            <td><code>${esc(u.username || u.email || '—')}</code></td>
             <td class="rolebadges">
-              ${u.isAdmin ? '<span class="badge badge-crit">ADMIN</span>' : ''}
-              ${u.isIT ? '<span class="badge badge-progress">IT</span>' : ''}
-              ${(!u.isAdmin && !u.isIT) ? '<span class="badge badge-open">EMPLOYEE</span>' : ''}
+              ${(u.isAdmin||u.is_admin) ? '<span class="badge badge-crit">ADMIN</span>' : ''}
+              ${(u.isIT||u.is_it) ? '<span class="badge badge-progress">IT</span>' : ''}
+              ${(!(u.isAdmin||u.is_admin) && !(u.isIT||u.is_it)) ? '<span class="badge badge-open">EMPLOYEE</span>' : ''}
             </td>
             <td>${u.id!=='u-admin' ? `<button class="btn btn-quiet" data-deluser="${u.id}">Remove</button>` : ''}</td>
           </tr>
@@ -813,7 +841,8 @@ function renderAdminPeople(){
    RENDER: ADMIN — CATEGORIES
 ===================================================================== */
 function renderAdminCategories(){
-  const cats = DataLayer.getCategories();
+  if(state.loading) return `<div class="maxw"><h1>Categories &amp; weights</h1><p class="sub">Loading…</p>${skeletons(4)}</div>`;
+  const cats = state.cache.categories;
   return `
   <div class="maxw">
     <h1>Categories &amp; weights</h1>
@@ -824,9 +853,9 @@ function renderAdminCategories(){
         ${cats.map(c => `
           <tr>
             <td>${esc(c.label)}</td>
-            <td><span class="titletag">${esc(c.dept)}</span></td>
+            <td><span class="titletag">${esc(c.dept||c.department)}</span></td>
             <td><input class="numinput" type="number" min="0" max="100" value="${c.weight}" data-catweight="${c.id}"></td>
-            <td><input class="numinput" type="number" min="0" max="300" value="${c.avgMin}" data-catmin="${c.id}"></td>
+            <td><input class="numinput" type="number" min="0" max="300" value="${c.avgMin ?? c.avg_minutes}" data-catmin="${c.id}"></td>
           </tr>
         `).join('')}
       </tbody>
@@ -836,19 +865,17 @@ function renderAdminCategories(){
 }
 
 /* =====================================================================
-   MAIN RENDER
+   MAIN RENDER + BINDINGS
 ===================================================================== */
 function render(){
   const app = document.getElementById('app');
-  state.user = DataLayer.currentUser();
-
   if(!state.user){
     app.innerHTML = renderLogin();
     bindLogin();
+    primeLoginStats();
     return;
   }
   if(!state.tab) state.tab = defaultTabFor(state.user);
-
   let inner = '';
   switch(state.tab){
     case 'new-request': inner = renderNewRequest(); break;
@@ -863,102 +890,76 @@ function render(){
   bindShell();
 }
 
-/* =====================================================================
-   BINDINGS
-===================================================================== */
 function bindLogin(){
   const numEl = document.getElementById('serving-num');
   if(numEl) animateCount(numEl, Number(numEl.dataset.target || 0));
+  const dismiss = document.getElementById('dismiss-banner');
+  if(dismiss) dismiss.addEventListener('click', () => { state.bannerDismissed = true; render(); });
+
   const form = document.getElementById('loginform');
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
+    const btn = document.getElementById('login-submit');
     const username = document.getElementById('f-user').value;
     const password = document.getElementById('f-pass').value;
-    const u = DataLayer.login(username, password);
-    if(!u){ state.loginError = 'Wrong username or password.'; render(); return; }
-    state.loginError = '';
-    state.tab = defaultTabFor(u);
-    render();
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try{
+      const u = await Backend.login(username, password);
+      state.loginError = ''; state.user = u; state.tab = defaultTabFor(u);
+      render(); loadTab(state.tab);
+    }catch(err){
+      state.loginError = err.message || 'Sign-in failed.'; render();
+    }
   });
 }
 
 function bindShell(){
-  document.getElementById('logoutbtn').addEventListener('click', () => {
-    DataLayer.logout();
-    state.tab = null;
+  document.getElementById('logoutbtn').addEventListener('click', async () => {
+    await Backend.logout();
+    state.user = null; state.tab = null;
     render();
   });
   document.querySelectorAll('.nav button[data-tab]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.newTicket = { categoryId:'', severity:'normal', description:'' };
-      setTab(btn.dataset.tab);
-    });
+    btn.addEventListener('click', () => setTab(btn.dataset.tab));
   });
-
-  bindNewRequest();
-  bindITQueue();
-  bindAdminPeople();
-  bindAdminCategories();
+  bindNewRequest(); bindITQueue(); bindAdminPeople(); bindAdminCategories();
 }
 
 function bindNewRequest(){
   const sel = document.getElementById('cat-select');
-  if(sel){
-    sel.addEventListener('change', () => {
-      state.newTicket.categoryId = sel.value;
-      render();
-    });
-  }
-  document.querySelectorAll('.sevchip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      state.newTicket.severity = chip.dataset.sev;
-      render();
-    });
-  });
+  if(sel) sel.addEventListener('change', () => { state.newTicket.categoryId = sel.value; render(); });
+  document.querySelectorAll('.sevchip').forEach(chip => chip.addEventListener('click', () => { state.newTicket.severity = chip.dataset.sev; render(); }));
   const desc = document.getElementById('desc-field');
-  if(desc){
-    desc.addEventListener('input', () => { state.newTicket.description = desc.value; });
-  }
+  if(desc) desc.addEventListener('input', () => { state.newTicket.description = desc.value; });
   const submitBtn = document.getElementById('submit-ticket');
   if(submitBtn){
-    submitBtn.addEventListener('click', () => {
-      const cat = DataLayer.getCategories().find(c => c.id === state.newTicket.categoryId);
-      if(!cat || cat.dept !== 'IT') return;
-      const descVal = document.getElementById('desc-field').value.trim();
-      const tickets = DataLayer.getTickets();
-      const seq = tickets.length + 1;
-      const ticket = {
-        id: 't-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
-        seq,
-        userId: state.user.id,
-        categoryId: cat.id,
-        severity: state.newTicket.severity,
-        description: descVal,
-        status: 'open',
-        createdAt: Date.now(),
-        resolvedAt: null,
-      };
-      ticket.score = scoreOf(ticket);
-      tickets.push(ticket);
-      DataLayer.saveTickets(tickets);
-      state.newTicket = { categoryId:'', severity:'normal', description:'' };
-      toast('Request sent to IT.');
-      setTab('my-requests');
+    submitBtn.addEventListener('click', async () => {
+      submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
+      try{
+        await Backend.submitTicket({
+          categoryId: state.newTicket.categoryId,
+          severity: state.newTicket.severity,
+          description: document.getElementById('desc-field').value.trim(),
+        });
+        toast('Request sent to IT.');
+        setTab('my-requests');
+      }catch(e){
+        toast(e.message || 'Could not send that request.');
+        submitBtn.disabled = false; submitBtn.textContent = 'Send to IT';
+      }
     });
   }
 }
 
 function bindITQueue(){
   document.querySelectorAll('[data-action]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.id;
-      const tickets = DataLayer.getTickets();
-      const t = tickets.find(x => x.id === id);
-      if(!t) return;
-      if(btn.dataset.action === 'start'){ t.status = 'in_progress'; }
-      if(btn.dataset.action === 'resolve'){ t.status = 'resolved'; t.resolvedAt = Date.now(); }
-      DataLayer.saveTickets(tickets);
-      render();
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try{
+        if(btn.dataset.action === 'start') await Backend.startTicket(btn.dataset.id);
+        if(btn.dataset.action === 'resolve') await Backend.resolveTicket(btn.dataset.id);
+        await loadTab(state.tab);
+      }catch(e){ toast(e.message || 'Could not update that ticket.'); btn.disabled = false; }
     });
   });
 }
@@ -966,66 +967,59 @@ function bindITQueue(){
 function bindAdminPeople(){
   const form = document.getElementById('adduserform');
   if(form){
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
-      const users = DataLayer.getUsers();
-      const username = document.getElementById('nu-user').value.trim();
-      if(users.some(u => u.username.toLowerCase() === username.toLowerCase())){
-        toast('That username is already taken.');
-        return;
+      const submit = form.querySelector('button[type="submit"]');
+      submit.disabled = true; submit.textContent = 'Creating…';
+      try{
+        const created = await Backend.adminCreatePerson({
+          name: document.getElementById('nu-name').value.trim(),
+          title: document.getElementById('nu-title').value,
+          username: document.getElementById('nu-user').value.trim(),
+          password: document.getElementById('nu-pass').value,
+          isIT: document.getElementById('nu-isit').checked,
+          isAdmin: document.getElementById('nu-isadmin').checked,
+        });
+        toast('Account created for ' + created.name + '.');
+        await loadTab('admin-people');
+      }catch(err){
+        toast(err.message || 'Could not create that account.');
+        submit.disabled = false; submit.textContent = 'Create account';
       }
-      const u = {
-        id: 'u-' + Date.now(),
-        name: document.getElementById('nu-name').value.trim(),
-        title: document.getElementById('nu-title').value,
-        username,
-        password: document.getElementById('nu-pass').value,
-        isIT: document.getElementById('nu-isit').checked,
-        isAdmin: document.getElementById('nu-isadmin').checked,
-      };
-      users.push(u);
-      DataLayer.saveUsers(users);
-      toast('Account created for ' + u.name + '.');
-      render();
     });
   }
   document.querySelectorAll('[data-deluser]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      let users = DataLayer.getUsers();
-      users = users.filter(u => u.id !== btn.dataset.deluser);
-      DataLayer.saveUsers(users);
-      render();
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try{ await Backend.adminDeletePerson(btn.dataset.deluser); await loadTab('admin-people'); }
+      catch(e){ toast(e.message || 'Could not remove that account.'); btn.disabled = false; }
     });
   });
 }
 
 function bindAdminCategories(){
   document.querySelectorAll('[data-catweight]').forEach(inp => {
-    inp.addEventListener('change', () => {
-      const cats = DataLayer.getCategories();
-      const c = cats.find(x => x.id === inp.dataset.catweight);
-      if(c) c.weight = Math.max(0, Math.min(100, Number(inp.value)||0));
-      DataLayer.saveCategories(cats);
-      recomputeAllScores();
+    inp.addEventListener('change', async () => {
+      try{ await Backend.adminPatchCategory(inp.dataset.catweight, { weight: Math.max(0, Math.min(100, Number(inp.value)||0)) }); }
+      catch(e){ toast(e.message || 'Could not save that.'); }
     });
   });
   document.querySelectorAll('[data-catmin]').forEach(inp => {
-    inp.addEventListener('change', () => {
-      const cats = DataLayer.getCategories();
-      const c = cats.find(x => x.id === inp.dataset.catmin);
-      if(c) c.avgMin = Math.max(0, Number(inp.value)||0);
-      DataLayer.saveCategories(cats);
+    inp.addEventListener('change', async () => {
+      try{ await Backend.adminPatchCategory(inp.dataset.catmin, { avgMinutes: Math.max(0, Number(inp.value)||0) }); }
+      catch(e){ toast(e.message || 'Could not save that.'); }
     });
   });
 }
 
-function recomputeAllScores(){
-  const tickets = DataLayer.getTickets();
-  tickets.forEach(t => { t.score = scoreOf(t); });
-  DataLayer.saveTickets(tickets);
-}
-
-render();
+/* =====================================================================
+   BOOT
+===================================================================== */
+Backend.onAuthChange(async (user) => {
+  state.user = user;
+  if(user){ state.tab = state.tab || defaultTabFor(user); render(); loadTab(state.tab); }
+  else { state.tab = null; render(); }
+});
 </script>
 </body>
 </html>

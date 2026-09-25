@@ -7,13 +7,18 @@ each person's title; IT works one sorted queue.
 
 ## What's in this folder
 
-- **`index.html`** — the whole app. Open it directly in a browser and it
-  works right now, using your browser's local storage as the "database" so
-  you can click through every screen (login, submit a request, IT queue,
-  admin panel) before wiring up real accounts.
+- **`index.html`** — the whole front end. Open it directly in a browser and
+  it works right now in **demo mode** (sample data in this browser's local
+  storage) — no setup needed. Fill in the `CONFIG` object near the top of
+  its `<script>` with your real Firebase project and your deployed Render
+  API URL, and it automatically switches to **live mode**: real accounts,
+  real Postgres data, the same UI.
+- **`server/`** — the backend API, ready to deploy to **Render**
+  (`server.js`, `package.json`, `.env.example`).
 - **`supabase-schema.sql`** — the production database schema.
-- **`worker.js`** — a Cloudflare Worker that sits between the front end and
-  Supabase (explanation below for why you need this).
+- **`worker.js`** — an alternative backend for **Cloudflare Workers**
+  instead of Render, if you'd rather run on the edge. Same routes, same
+  behavior; pick one or the other, not both.
 - **`README.md`** — this file.
 
 ## Try it now
@@ -55,11 +60,12 @@ but worth knowing up front: **Firebase Auth and Supabase are two separate
 identity systems.** Supabase's own security model (Row Level Security) is
 built around *its own* auth — it can't natively recognize a Firebase login.
 The standard fix is a thin trusted backend in between that checks the
-Firebase login, then talks to Supabase on the user's behalf. That's what
-`worker.js` is. The alternative — simpler, one fewer moving part — is to
-drop Firebase and use **Supabase Auth** instead, since Supabase already
-includes auth for free and RLS then works natively. Say the word if you'd
-rather I rebuild it that way; it removes the Worker entirely.
+Firebase login, then talks to Supabase on the user's behalf — that's what
+`server/` (deployed to Render) does. The alternative — simpler, one fewer
+moving part — is to drop Firebase and use **Supabase Auth** instead, since
+Supabase already includes auth for free and RLS then works natively. Say
+the word if you'd rather I rebuild it that way; it removes this backend
+service entirely.
 
 If you'd rather keep Firebase + Supabase as you specified, here's the setup:
 
@@ -69,12 +75,14 @@ If you'd rather keep Firebase + Supabase as you specified, here's the setup:
 2. Build → Authentication → **Get started** → enable **Email/Password**.
 3. Project settings → your web app → copy the `firebaseConfig` object.
 4. Employees can't self-register — only Admin creates accounts (per your
-   spec) — so **don't** use client-side `createUserWithEmailAndPassword` for
-   that (it signs the admin out and logs in as the new user). Instead, the
-   Worker should create Firebase users server-side via the [Identity
-   Toolkit REST API](https://cloud.google.com/identity-platform/docs/use-rest-api)
-   using a Firebase service account. That endpoint isn't stubbed in
-   `worker.js` yet — ask and I'll add it.
+   spec). The Worker's `POST /admin/people` endpoint handles this correctly:
+   it creates the Firebase account server-side (via the public sign-up REST
+   endpoint, using only the Web API key) so the admin's own browser session
+   is never touched, then creates the matching Supabase profile in the same
+   call. Removing someone (`DELETE /admin/people/:id`) uses Firebase's
+   OAuth-authenticated admin endpoint instead, since deleting *another*
+   user's account requires a real admin credential, not just an API key —
+   that's what the service-account secrets are for.
 
 ### 2. Supabase (database)
 
@@ -84,51 +92,102 @@ If you'd rather keep Firebase + Supabase as you specified, here's the setup:
    key (⚠️ never put the service_role key in the front end — it belongs
    only in the Worker's secrets, step below).
 
-### 3. Cloudflare (Worker backend + domain)
+### 3. Render (backend API)
 
-```
-npm install -g wrangler
-wrangler login
-wrangler deploy worker.js
-wrangler secret put SUPABASE_URL
-wrangler secret put SUPABASE_SERVICE_ROLE_KEY
-wrangler secret put FIREBASE_PROJECT_ID
-```
+1. [render.com](https://render.com) → **New** → **Web Service** → point it
+   at the `server/` folder (push this project to a GitHub repo first, or
+   use Render's manual deploy).
+2. Build command: `npm install`. Start command: `npm start`.
+3. In the service's **Environment** tab, add every variable from
+   `server/.env.example`:
+   - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — from Supabase step 2 above.
+   - `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` —
+     Firebase console → Project settings → **Service accounts** → **Generate
+     new private key**, which downloads a JSON file. Copy `project_id`,
+     `client_email`, and `private_key` from it — Render's environment editor
+     accepts the private key's real multi-line format, so paste it exactly
+     as it appears (including the `-----BEGIN/END PRIVATE KEY-----` lines).
+4. Deploy. Render gives you a URL like `https://dispatch-api.onrender.com`
+   — that's the value for `apiBase` in `index.html`'s `CONFIG`.
+5. Sanity check once it's up: `curl https://your-app.onrender.com/health`
+   should return `{"ok":true}`.
 
-Then, for the domain:
+Unlike the Cloudflare Worker version, this server uses the official
+`firebase-admin` SDK, so creating a user is a single server-side call —
+no separate Web API key needed, and no risk of it ever touching an
+admin's own session.
+
+### 4. Cloudflare (domain + hosting the front end)
+
 1. Cloudflare dashboard → add `zolaxtech.com.et` (or a subdomain like
-   `helpdesk.zolaxtech.com.et`) as a site, or a Worker route.
-2. Host `index.html` on **Cloudflare Pages** (drag-and-drop deploy, free) and
-   point your domain's DNS at it — Cloudflare will issue the SSL cert
-   automatically.
-3. Point the Worker at a route like `helpdesk.zolaxtech.com.et/api/*`.
+   `helpdesk.zolaxtech.com.et`) as a site.
+2. Host `index.html` on **Cloudflare Pages** (drag-and-drop deploy, free —
+   just this one file) and point your domain's DNS at it; Cloudflare issues
+   the SSL certificate automatically. Cloudflare isn't running any of your
+   application code here — Render does that — Cloudflare is purely DNS +
+   static hosting + SSL for the page itself.
 
-### 4. Wire the front end to the real backend
+### 5. Fill in `CONFIG` and go live
 
-In `index.html`, everything storage-related lives inside the
-`DataLayer` object near the top of the `<script>` — that's the only part
-that needs to change. Today its methods read/write `localStorage`. Swap
-each one for:
+At the top of `index.html`'s `<script>` block:
 
-- `login()` → Firebase `signInWithEmailAndPassword()`, then call your
-  Worker's `/tickets`, `/queue`, etc. with `getIdToken()` as the
-  `Authorization: Bearer <token>` header.
-- `getTickets()` / `getUsers()` / `getCategories()` → `fetch()` calls to
-  the Worker endpoints (`GET /queue`, etc.), which query Supabase for you.
-- Ticket creation/claim/resolve buttons already call clearly-named
-  functions (`submit-ticket`, `data-action="start"/"resolve"`) — point
-  those at `POST /tickets`, `POST /tickets/:id/start`, `POST
-  /tickets/:id/resolve` from `worker.js`.
+```js
+const CONFIG = {
+  firebase: {
+    apiKey: "…",          // Firebase console > Project settings > General
+    authDomain: "….firebaseapp.com",
+    projectId: "…",
+  },
+  apiBase: "https://dispatch-api.onrender.com",  // your Render URL from step 3
+};
+```
 
-Everything else — the UI, the priority math, the layout — stays exactly
-as it is.
+The moment `apiKey` and `apiBase` are real values, the app switches from
+demo mode to live mode automatically — same UI, same file, now talking to
+real accounts and a real database. Note logins become **email addresses**
+in live mode (Firebase requires it), so create the admin's first account
+directly in the Firebase console with email/password sign-in, add a
+matching row in Supabase's `profiles` table with `is_admin = true`, and
+they can then use the People screen to add everyone else properly.
+
+## The API (`server/server.js`)
+
+Every route expects `Authorization: Bearer <Firebase ID token>` (get one
+client-side with `await firebase.auth().currentUser.getIdToken()`).
+
+| Method & path | Who | What |
+|---|---|---|
+| `GET /categories` | anyone signed in | list categories, for the request form |
+| `POST /tickets` | anyone signed in | submit a ticket (rejected if category isn't IT's) |
+| `GET /my-tickets` | anyone signed in | your own tickets, with live rank + ETA |
+| `GET /queue` | IT, Admin | the full sorted live queue |
+| `GET /resolved` | IT, Admin | resolved-ticket history |
+| `POST /tickets/:id/start` | IT, Admin | claim a ticket |
+| `POST /tickets/:id/resolve` | IT, Admin | close a ticket |
+| `GET /admin/people` | Admin | list everyone |
+| `POST /admin/people` | Admin | create a Firebase account + profile |
+| `DELETE /admin/people/:id` | Admin | delete the Firebase account + profile |
+| `PATCH /admin/categories/:id` | Admin | update a category's weight / avg fix time |
+
+The priority-queue math (score, rank, ETA) is computed here, not trusted
+from the client, so nobody can jump the queue by editing front-end code.
+
+## Demo mode vs. live mode
+
+`index.html` already contains both data layers (`DEMO` and `REMOTE`) and
+picks between them automatically based on whether `CONFIG` looks filled
+in — there's nothing left to wire up. Demo mode needs nothing; live mode
+needs steps 1–5 above done and `CONFIG` filled in. Everything else — the
+UI, the layout, the priority math shown to the user — is identical between
+the two.
 
 ## Want me to go further?
 
 I can, in follow-up turns:
-- Finish `worker.js` into a complete API (admin add/remove people,
-  live category weight edits, the Firebase Admin user-creation endpoint).
-- Rebuild this on **Supabase Auth only** (removes the Worker and the
-  two-identity-system complexity, if you'd rather keep it simple).
+- Rebuild this on **Supabase Auth only** (removes the separate backend
+  service and the two-identity-system complexity, if you'd rather keep
+  it simple).
 - Add real-time updates (queue re-ranks live for everyone watching,
   via Supabase Realtime) instead of refresh-to-see.
+- Add a proper "forgot password" flow, since Admin-created accounts
+  start on a temporary password.
